@@ -1,0 +1,51 @@
+﻿*************************** 1. row ***************************
+       Table: courses
+Create Table: CREATE TABLE `courses` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `description` text,
+  `instructor_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `instructor_id` (`instructor_id`),
+  CONSTRAINT `courses_ibfk_1` FOREIGN KEY (`instructor_id`) REFERENCES `user_master` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+*************************** 1. row ***************************
+       Table: enrollments
+Create Table: CREATE TABLE `enrollments` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `student_id` int NOT NULL,
+  `course_id` int NOT NULL,
+  `enrollment_date` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `student_course_unique` (`student_id`,`course_id`),
+  KEY `course_id` (`course_id`),
+  CONSTRAINT `enrollments_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `user_master` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `enrollments_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+*************************** 1. row ***************************
+       Table: student_progress
+Create Table: CREATE TABLE `student_progress` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `student_id` int NOT NULL,
+  `module_id` int NOT NULL,
+  `completed_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `student_module_unique` (`student_id`,`module_id`),
+  KEY `module_id` (`module_id`),
+  CONSTRAINT `student_progress_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `user_master` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `student_progress_ibfk_2` FOREIGN KEY (`module_id`) REFERENCES `course_modules` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+*************************** 1. row ***************************
+       Table: user_master
+Create Table: CREATE TABLE `user_master` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `mobile` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `role` varchar(50) NOT NULL,
+  `status` int NOT NULL DEFAULT '0',
+  `is_online` tinyint DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
