@@ -130,7 +130,7 @@
                                             <div>
                                                 <h6 class="fw-bold mb-1" style="font-size:0.9rem;">${notice.title}</h6>
                                                 <p class="small text-muted mb-1">${notice.description}</p>
-                                                <span class="small text-muted"><i class="bi bi-calendar3 me-1"></i>${notice.notice_date}</span>
+                                                <span class="small text-muted"><i class="bi bi-calendar3 me-1"></i>${notice.noticeDate}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -164,3 +164,4 @@
     </script>
 </body>
 </html>
+

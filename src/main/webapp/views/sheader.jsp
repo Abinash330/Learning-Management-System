@@ -299,7 +299,7 @@
                                   <i class="fa-solid fa-megaphone text-primary mt-1" style="font-size:0.85rem;"></i>
                                   <div>
                                     <div class="fw-semibold text-white" style="font-size:0.85rem;">${n.title}</div>
-                                    <small class="text-muted">${n.notice_date || ''}</small>
+                                    <small class="text-muted">${n.noticeDate || ''}</small>
                                   </div>
                                   ${isNew ? '<span class="badge bg-primary ms-auto" style="font-size:0.6rem;">NEW</span>' : ''}
                                 </div>

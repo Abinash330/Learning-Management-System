@@ -83,11 +83,11 @@
                     <div id="assignmentList">
                         <c:forEach var="a" items="${assignments}">
                             <c:choose>
-                                <c:when test="${a.sub_status == 'graded'}">
+                                <c:when test="${a.subStatus == 'graded'}">
                                     <c:set var="cardClass" value="graded"/>
                                     <c:set var="dataStatus" value="graded"/>
                                 </c:when>
-                                <c:when test="${a.sub_status == 'submitted'}">
+                                <c:when test="${a.subStatus == 'submitted'}">
                                     <c:set var="cardClass" value="submitted"/>
                                     <c:set var="dataStatus" value="submitted"/>
                                 </c:when>
@@ -108,15 +108,15 @@
                                         <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-1">
                                             <div>
                                                 <h6 class="fw-bold mb-0" style="font-size:0.95rem;">${a.title}</h6>
-                                                <span class="small text-muted"><i class="bi bi-book me-1"></i>${a.course_title}</span>
+                                                <span class="small text-muted"><i class="bi bi-book me-1"></i>${a.course.title}</span>
                                             </div>
                                             <div class="d-flex gap-2 align-items-center">
-                                                <span class="small text-muted"><i class="bi bi-calendar3 me-1"></i>Due: <strong>${a.due_date}</strong></span>
+                                                <span class="small text-muted"><i class="bi bi-calendar3 me-1"></i>Due: <strong>${a.dueDate}</strong></span>
                                                 <c:choose>
-                                                    <c:when test="${a.sub_status == 'graded'}">
+                                                    <c:when test="${a.subStatus == 'graded'}">
                                                         <span class="status-badge bg-success text-white">✔ GRADED</span>
                                                     </c:when>
-                                                    <c:when test="${a.sub_status == 'submitted'}">
+                                                    <c:when test="${a.subStatus == 'submitted'}">
                                                         <span class="status-badge bg-primary text-white">📤 SUBMITTED</span>
                                                     </c:when>
                                                     <c:otherwise>
@@ -128,7 +128,7 @@
                                         <p class="small text-muted mb-2" style="font-size:0.82rem;">${a.description}</p>
 
                                         <!-- Graded Result -->
-                                        <c:if test="${a.sub_status == 'graded'}">
+                                        <c:if test="${a.subStatus == 'graded'}">
                                             <div class="d-flex align-items-center gap-3 mt-2 p-3 rounded-3" style="background:rgba(16,185,129,0.08);border:1px solid #a7f3d0;">
                                                 <div class="score-bubble">${a.marks}</div>
                                                 <div>
@@ -139,11 +139,11 @@
                                         </c:if>
 
                                         <!-- Submit / Resubmit Form -->
-                                        <c:if test="${a.sub_status != 'graded'}">
+                                        <c:if test="${a.subStatus != 'graded'}">
                                             <div class="submit-area">
                                                 <p class="small fw-bold text-muted mb-2">
                                                     <c:choose>
-                                                        <c:when test="${a.sub_status == 'submitted'}">✏️ Edit your submission:</c:when>
+                                                        <c:when test="${a.subStatus == 'submitted'}">✏️ Edit your submission:</c:when>
                                                         <c:otherwise>📝 Write your answer:</c:otherwise>
                                                     </c:choose>
                                                 </p>
@@ -155,7 +155,7 @@
                                                     <button type="submit" class="btn btn-submit">
                                                         <i class="bi bi-send-fill me-2"></i>
                                                         <c:choose>
-                                                            <c:when test="${a.sub_status == 'submitted'}">Update Submission</c:when>
+                                                            <c:when test="${a.subStatus == 'submitted'}">Update Submission</c:when>
                                                             <c:otherwise>Submit Assignment</c:otherwise>
                                                         </c:choose>
                                                     </button>
@@ -194,3 +194,4 @@
     </script>
 </body>
 </html>
+

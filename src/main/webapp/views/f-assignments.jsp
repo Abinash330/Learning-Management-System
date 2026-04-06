@@ -137,13 +137,13 @@
                                                     <div class="fw-bold" style="font-size:0.88rem;">${a.title}</div>
                                                     <div class="small text-muted" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.description}</div>
                                                 </td>
-                                                <td><span class="badge bg-success bg-opacity-10 text-success" style="font-size:0.75rem;">${a.course_title}</span></td>
+                                                <td><span class="badge bg-success bg-opacity-10 text-success" style="font-size:0.75rem;">${a.course.title}</span></td>
                                                 <td>
-                                                    <span class="small fw-bold text-danger"><i class="bi bi-calendar3 me-1"></i>${a.due_date}</span>
+                                                    <span class="small fw-bold text-danger"><i class="bi bi-calendar3 me-1"></i>${a.dueDate}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-warning bg-opacity-15 text-warning">${a.submission_count} submitted</span><br>
-                                                    <span class="badge bg-success bg-opacity-10 text-success mt-1">${a.graded_count} graded</span>
+                                                    <span class="badge bg-warning bg-opacity-15 text-warning">${a.submissionCount} submitted</span><br>
+                                                    <span class="badge bg-success bg-opacity-10 text-success mt-1">${a.gradedCount} graded</span>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -174,11 +174,11 @@
                                 <div class="card-custom p-3 mb-3">
                                     <div class="d-flex align-items-start gap-2 mb-2">
                                         <div style="width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,0.1);display:flex;align-items:center;justify-content:center;color:#10b981;font-weight:800;flex-shrink:0;">
-                                            ${sub.student_name.substring(0,1).toUpperCase()}
+                                            ${sub.student.name.substring(0,1).toUpperCase()}
                                         </div>
                                         <div>
-                                            <div class="fw-bold" style="font-size:0.85rem;">${sub.student_name}</div>
-                                            <div class="small text-muted" style="font-size:0.75rem;">${sub.assignment_title}</div>
+                                            <div class="fw-bold" style="font-size:0.85rem;">${sub.student.name}</div>
+                                            <div class="small text-muted" style="font-size:0.75rem;">${sub.assignment.title}</div>
                                         </div>
                                         <span class="badge bg-warning ms-auto" style="font-size:0.65rem;">PENDING</span>
                                     </div>
@@ -186,7 +186,7 @@
                                         ${sub.answer}
                                     </div>
                                     <form action="/f-grade" method="post">
-                                        <input type="hidden" name="submission_id" value="${sub.id}">
+                                        <input type="hidden" name="submissionId" value="${sub.id}">
                                         <div class="grade-form">
                                             <div class="row g-2">
                                                 <div class="col-4">
@@ -229,7 +229,7 @@
                     <form action="/f-create-assignment" method="post">
                         <div class="mb-3">
                             <label class="form-label fw-bold small">Select Course</label>
-                            <select name="course_id" class="form-select input-custom" required>
+                            <select name="course.id" class="form-select input-custom" required>
                                 <option value="" disabled selected>-- Choose a course --</option>
                                 <c:forEach var="course" items="${myCourses}">
                                     <option value="${course.id}">${course.title}</option>
@@ -246,7 +246,7 @@
                         </div>
                         <div class="mb-4">
                             <label class="form-label fw-bold small">Due Date</label>
-                            <input type="date" name="due_date" class="form-control input-custom" required>
+                            <input type="date" name="dueDate" class="form-control input-custom" required>
                         </div>
                         <button type="submit" class="btn btn-green w-100 py-3">
                             <i class="bi bi-send-fill me-2"></i> Publish Assignment
@@ -261,3 +261,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

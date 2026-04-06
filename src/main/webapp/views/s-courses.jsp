@@ -158,7 +158,7 @@
                 </div>
                 <div class="modal-body px-4 pb-4">
                     <form action="/s-update-progress" method="post" id="progressForm">
-                        <input type="hidden" name="course_id" id="modalCourseId">
+                        <input type="hidden" name="course.id" id="modalCourseId">
                         <label class="small fw-bold text-muted mb-2 d-block">Progress: <span id="sliderVal">0</span>%</label>
                         <input type="range" name="progress" id="progressSlider" min="0" max="100" value="0"
                             class="form-range mb-3" style="accent-color:#7c3aed;">
@@ -204,3 +204,4 @@
     </script>
 </body>
 </html>
+
