@@ -345,28 +345,28 @@
                             <span class="fw-bold small">Active Users (Approved)</span>
                             <span class="fw-bold small text-success">${activeUsersCount}</span>
                         </div>
-                        <div class="custom-progress"><div class="custom-progress-bar" style="background:linear-gradient(90deg,#10b981,#059669);" data-width="80"></div></div>
+                        <div class="custom-progress"><div class="custom-progress-bar" style="background:linear-gradient(90deg,#10b981,#059669);" data-width="${activeUsersPct}"></div></div>
                     </div>
                     <div class="mb-4">
                         <div class="d-flex justify-content-between mb-1">
                             <span class="fw-bold small">Total Enrollments</span>
                             <span class="fw-bold small text-info">${totalEnrollments}</span>
                         </div>
-                        <div class="custom-progress"><div class="custom-progress-bar" style="background:linear-gradient(90deg,#06b6d4,#0891b2);" data-width="65"></div></div>
+                        <div class="custom-progress"><div class="custom-progress-bar" style="background:linear-gradient(90deg,#06b6d4,#0891b2);" data-width="${enrolledPct}"></div></div>
                     </div>
                     <div class="mb-4">
                         <div class="d-flex justify-content-between mb-1">
                             <span class="fw-bold small">Total Courses</span>
                             <span class="fw-bold small text-warning">${totalCourses}</span>
                         </div>
-                        <div class="custom-progress"><div class="custom-progress-bar" style="background:linear-gradient(90deg,#f59e0b,#d97706);" data-width="45"></div></div>
+                        <div class="custom-progress"><div class="custom-progress-bar" style="background:linear-gradient(90deg,#f59e0b,#d97706);" data-width="${coursesPct}"></div></div>
                     </div>
                     <div class="mb-2">
                         <div class="d-flex justify-content-between mb-1">
                             <span class="fw-bold small">Pending Approvals</span>
                             <span class="fw-bold small text-danger">${pendingCount}</span>
                         </div>
-                        <div class="custom-progress"><div class="custom-progress-bar" style="background:linear-gradient(90deg,#ef4444,#dc2626);" data-width="20"></div></div>
+                        <div class="custom-progress"><div class="custom-progress-bar" style="background:linear-gradient(90deg,#ef4444,#dc2626);" data-width="${pendingUsersPct}"></div></div>
                     </div>
 
                     <!-- Quick numbers row -->
@@ -483,7 +483,7 @@
                                         </td>
                                         <td>
                                             <c:choose>
-                                                <c:when test="${user.is_online == 1}">
+                                                <c:when test="${user.isOnline == 1}">
                                                     <span class="badge rounded-pill bg-success px-2 py-1">
                                                         <div class="spinner-grow spinner-grow-sm text-light me-1" role="status" style="width:0.45rem;height:0.45rem;"></div> Online
                                                     </span>
@@ -632,7 +632,7 @@
                     </div>
                     <h5 class="fw-bold mb-1" style="font-size:1rem;">Course Builder</h5>
                     <p class="text-muted small mb-3">Construct learning modules globally.</p>
-                    <button class="btn btn-outline-custom w-100">Manage Courses</button>
+                    <a href="/admin-courses" class="btn btn-outline-custom w-100">Manage Courses</a>
                 </div>
             </div>
             <div class="col-md-3 col-6">
@@ -642,7 +642,7 @@
                     </div>
                     <h5 class="fw-bold mb-1" style="font-size:1rem;">Analytics Engine</h5>
                     <p class="text-muted small mb-3">View engagement &amp; traffic reports.</p>
-                    <button class="btn btn-outline-custom w-100">View Metrics</button>
+                    <a href="/admin-metrics" class="btn btn-outline-custom w-100">View Metrics</a>
                 </div>
             </div>
             <div class="col-md-3 col-6">
@@ -681,7 +681,7 @@
                                                 <c:out value="${notice.description}" />
                                             </div>
                                             <div class="small text-primary fw-bold mt-1" style="font-size:0.73rem;">
-                                                <i class="bi bi-calendar3 me-1"></i>${notice.notice_date}
+                                                <i class="bi bi-calendar3 me-1"></i>${notice.noticeDate}
                                             </div>
                                         </div>
                                     </div>
@@ -742,6 +742,166 @@
                 </div>
             </div>
         </div>
+
+        <!-- ════ BROADCAST EMAIL SECTION ════ -->
+        <div class="row g-4 mb-5 fade-up delay-4">
+            <div class="col-12">
+                <div class="section-title mb-1">
+                    <i class="bi bi-broadcast-pin text-danger"></i> Broadcast Email Center
+                </div>
+                <div class="section-subtitle mb-4">Send announcements directly to users' inboxes</div>
+            </div>
+
+            <!-- Flash messages -->
+            <c:if test="${not empty broadcastSuccess}">
+                <div class="col-12">
+                    <div class="alert border-0 rounded-4 d-flex align-items-center gap-3 shadow-sm"
+                         style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);" role="alert">
+                        <div style="width:44px;height:44px;border-radius:12px;background:#22c55e;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="bi bi-check-circle-fill text-white fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold text-success" style="font-size:0.95rem;">${broadcastSuccess}</div>
+                            <div class="small text-muted">Emails are being delivered asynchronously in the background.</div>
+                        </div>
+                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                    </div>
+                </div>
+            </c:if>
+            <c:if test="${not empty broadcastError}">
+                <div class="col-12">
+                    <div class="alert border-0 rounded-4 d-flex align-items-center gap-3 shadow-sm"
+                         style="background:#fef2f2;" role="alert">
+                        <div style="width:44px;height:44px;border-radius:12px;background:#ef4444;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="bi bi-exclamation-triangle-fill text-white fs-5"></i>
+                        </div>
+                        <div class="fw-bold text-danger" style="font-size:0.95rem;">${broadcastError}</div>
+                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                    </div>
+                </div>
+            </c:if>
+
+            <!-- Left: Compose Form -->
+            <div class="col-lg-7">
+                <div class="glass-card p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <div class="section-title"><i class="bi bi-envelope-paper-fill text-primary"></i> Compose Broadcast</div>
+                            <div class="section-subtitle">Message will be sent as a rich HTML email</div>
+                        </div>
+                        <a href="/broadcast-log" class="btn btn-outline-custom btn-sm">
+                            <i class="bi bi-clock-history me-1"></i> View History
+                        </a>
+                    </div>
+
+                    <form action="/broadcast-email" method="post" id="broadcastForm">
+
+                        <!-- Audience Selector -->
+                        <div class="mb-4">
+                            <label class="fw-bold small text-muted text-uppercase mb-2" style="letter-spacing:1px; display:block;">
+                                <i class="bi bi-people-fill me-1"></i> Target Audience
+                            </label>
+                            <div class="row g-2" id="audienceCards">
+                                <div class="col-6 col-md-3">
+                                    <label class="audience-card active w-100 text-center p-3 rounded-3 d-block" style="cursor:pointer;border:2px solid rgba(79,70,229,0.4);background:rgba(79,70,229,0.05);" for="aud-all">
+                                        <input type="radio" name="audience" id="aud-all" value="all" checked class="d-none">
+                                        <div style="width:40px;height:40px;border-radius:10px;background:rgba(79,70,229,0.1);color:#4f46e5;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.1rem;"><i class="bi bi-globe2"></i></div>
+                                        <div class="small fw-bold">All Users</div>
+                                        <div class="fw-bold text-primary">${totalUsers}</div>
+                                    </label>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <label class="audience-card w-100 text-center p-3 rounded-3 d-block" style="cursor:pointer;border:2px solid #e2e8f0;background:#f8fafc;" for="aud-students">
+                                        <input type="radio" name="audience" id="aud-students" value="students" class="d-none">
+                                        <div style="width:40px;height:40px;border-radius:10px;background:rgba(16,185,129,0.1);color:#10b981;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.1rem;"><i class="bi bi-mortarboard-fill"></i></div>
+                                        <div class="small fw-bold">Students</div>
+                                        <div class="fw-bold text-success">${studentCount}</div>
+                                    </label>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <label class="audience-card w-100 text-center p-3 rounded-3 d-block" style="cursor:pointer;border:2px solid #e2e8f0;background:#f8fafc;" for="aud-faculty">
+                                        <input type="radio" name="audience" id="aud-faculty" value="faculty" class="d-none">
+                                        <div style="width:40px;height:40px;border-radius:10px;background:rgba(6,182,212,0.1);color:#06b6d4;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.1rem;"><i class="bi bi-person-video3"></i></div>
+                                        <div class="small fw-bold">Faculty</div>
+                                        <div class="fw-bold text-info">${facultyCount}</div>
+                                    </label>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <label class="audience-card w-100 text-center p-3 rounded-3 d-block" style="cursor:pointer;border:2px solid #e2e8f0;background:#f8fafc;" for="aud-admins">
+                                        <input type="radio" name="audience" id="aud-admins" value="admins" class="d-none">
+                                        <div style="width:40px;height:40px;border-radius:10px;background:rgba(239,68,68,0.1);color:#ef4444;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.1rem;"><i class="bi bi-shield-fill"></i></div>
+                                        <div class="small fw-bold">Admins</div>
+                                        <div class="fw-bold text-danger">${adminCount}</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subject -->
+                        <div class="mb-3">
+                            <label class="fw-bold small text-muted text-uppercase mb-2" style="letter-spacing:1px;display:block;">
+                                <i class="bi bi-chat-square-text me-1"></i> Email Subject
+                            </label>
+                            <input type="text" name="subject" id="broadcastSubject" class="form-control rounded-3"
+                                   placeholder="e.g. Important: System Maintenance Tonight"
+                                   style="padding:0.8rem 1rem;font-weight:500;border:2px solid #e2e8f0;" required maxlength="200">
+                            <div class="text-end mt-1"><span id="subjectCount" class="small text-muted">0 / 200</span></div>
+                        </div>
+
+                        <!-- Message -->
+                        <div class="mb-4">
+                            <label class="fw-bold small text-muted text-uppercase mb-2" style="letter-spacing:1px;display:block;">
+                                <i class="bi bi-card-text me-1"></i> Message Body
+                            </label>
+                            <textarea name="message" id="broadcastMessage" class="form-control rounded-3"
+                                      placeholder="Write your message here..."
+                                      rows="6" style="padding:0.8rem 1rem;font-weight:500;resize:vertical;border:2px solid #e2e8f0;" required maxlength="2000"></textarea>
+                            <div class="text-end mt-1"><span id="msgCount" class="small text-muted">0 / 2000</span></div>
+                        </div>
+
+                        <!-- Send Button -->
+                        <button type="submit" class="btn btn-gradient w-100 py-3 shadow d-flex align-items-center justify-content-center gap-2" id="sendBroadcastBtn">
+                            <i class="bi bi-send-fill"></i> <span>Send Broadcast Email</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right: Preview + Tips -->
+            <div class="col-lg-5">
+                <!-- Live Preview -->
+                <div class="glass-card p-4 mb-4">
+                    <div class="section-title mb-3"><i class="bi bi-eye-fill text-success"></i> Live Preview</div>
+                    <div style="background:#f8fafc;border-radius:14px;overflow:hidden;border:1px solid #e2e8f0;">
+                        <div style="background:linear-gradient(135deg,#0f172a,#312e81);padding:20px;text-align:center;">
+                            <div style="font-size:1.4rem;margin-bottom:6px;">📢</div>
+                            <div style="color:white;font-weight:700;font-size:0.9rem;">EduPro LMS</div>
+                            <div id="previewAudience" style="color:rgba(255,255,255,0.6);font-size:0.72rem;">Broadcast to: All Users</div>
+                        </div>
+                        <div style="padding:16px;">
+                            <div id="previewSubject" class="fw-bold" style="font-size:0.9rem;color:#0f172a;margin-bottom:8px;">Your subject will appear here...</div>
+                            <div id="previewMessage" class="small text-muted" style="line-height:1.6;font-size:0.8rem;white-space:pre-wrap;">Your message will appear here...</div>
+                        </div>
+                        <div style="background:#f1f5f9;padding:10px 16px;text-align:center;border-top:1px solid #e2e8f0;">
+                            <span style="font-size:0.7rem;color:#94a3b8;">© 2026 EduPro LMS Admin Portal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tips -->
+                <div class="glass-card p-4">
+                    <div class="section-title mb-3"><i class="bi bi-lightbulb-fill text-warning"></i> Best Practices</div>
+                    <ul class="list-unstyled mb-0">
+                        <li class="d-flex gap-2 mb-2 small"><span style="color:#22c55e;flex-shrink:0;">✔</span><span>Keep subject lines under <strong>60 characters</strong></span></li>
+                        <li class="d-flex gap-2 mb-2 small"><span style="color:#22c55e;flex-shrink:0;">✔</span><span>Target <strong>specific audiences</strong> when possible</span></li>
+                        <li class="d-flex gap-2 mb-2 small"><span style="color:#22c55e;flex-shrink:0;">✔</span><span>Emails are sent <strong>asynchronously</strong> — page won't hang</span></li>
+                        <li class="d-flex gap-2 mb-2 small"><span style="color:#f59e0b;flex-shrink:0;">⚠</span><span>Only <strong>active</strong> users (status=1) receive broadcasts</span></li>
+                        <li class="d-flex gap-2 small"><span style="color:#6366f1;flex-shrink:0;">ℹ</span><span>All broadcasts are <strong>logged</strong> in history</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- ════ END BROADCAST EMAIL SECTION ════ -->
 
     </div>
 
@@ -885,6 +1045,63 @@
                 else { row.style.display='none'; }
             });
             document.getElementById('noUsersMsg').classList.toggle('d-none', visible > 0);
+        }
+
+        // ── Broadcast Email: Audience Card Selection ──
+        document.querySelectorAll('#audienceCards input[type=radio]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('.audience-card').forEach(c => {
+                    c.style.border = '2px solid #e2e8f0';
+                    c.style.background = '#f8fafc';
+                });
+                const lbl = this.closest('label');
+                lbl.style.border = '2px solid rgba(79,70,229,0.5)';
+                lbl.style.background = 'rgba(79,70,229,0.06)';
+                const labelMap = {
+                    'all': 'All Users', 'students': 'All Students',
+                    'faculty': 'All Faculty', 'admins': 'All Admins'
+                };
+                document.getElementById('previewAudience').textContent =
+                    'Broadcast to: ' + (labelMap[this.value] || 'All Users');
+            });
+        });
+
+        // ── Broadcast Email: Live Preview ──
+        const subjectEl = document.getElementById('broadcastSubject');
+        const messageEl = document.getElementById('broadcastMessage');
+        const previewSub = document.getElementById('previewSubject');
+        const previewMsg = document.getElementById('previewMessage');
+        const subjectCount = document.getElementById('subjectCount');
+        const msgCount = document.getElementById('msgCount');
+
+        if (subjectEl) {
+            subjectEl.addEventListener('input', function() {
+                previewSub.textContent = this.value || 'Your subject will appear here...';
+                subjectCount.textContent = this.value.length + ' / 200';
+            });
+        }
+        if (messageEl) {
+            messageEl.addEventListener('input', function() {
+                previewMsg.textContent = this.value || 'Your message will appear here...';
+                msgCount.textContent = this.value.length + ' / 2000';
+            });
+        }
+
+        // ── Broadcast Email: Confirm & Loading State ──
+        const broadcastForm = document.getElementById('broadcastForm');
+        if (broadcastForm) {
+            broadcastForm.addEventListener('submit', function(e) {
+                const subj = document.getElementById('broadcastSubject').value.trim();
+                const msg  = document.getElementById('broadcastMessage').value.trim();
+                const audience = document.querySelector('#audienceCards input[type=radio]:checked');
+                const audLabel = audience ? audience.closest('label').querySelector('.small').textContent : 'all users';
+                if (!confirm(`Send broadcast to "${audLabel}"?\n\nSubject: ${subj}\n\nThis will email all active users in that group.`)) {
+                    e.preventDefault(); return;
+                }
+                const btn = document.getElementById('sendBroadcastBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Sending...';
+            });
         }
     </script>
 </body>

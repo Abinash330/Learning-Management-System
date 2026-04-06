@@ -214,7 +214,7 @@
                                 </td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${user.is_online == 1}">
+                                        <c:when test="${user.isOnline == 1}">
                                             <span class="badge rounded-pill bg-success px-2">
                                                 <div class="spinner-grow spinner-grow-sm text-light me-1" style="width:0.4rem;height:0.4rem;"></div> Online
                                             </span>
