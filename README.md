@@ -17,6 +17,34 @@
 
 ---
 
+## ✨ New Features & How They Work
+
+### 1. Spring Data JPA Layer
+We modernized the entire data access layer, moving from fragile native JDBC statements to a robust **Spring Data JPA** architecture using Hibernate.
+- **How it works:** Core components such as `User`, `Course`, `Notice`, and `Enrollment` are defined as `@Entity` classes mapping directly to MySQL tables. `UserRepository` and other interfaces extend `JpaRepository`, automatically generating database operations. To handle case-insensitive dashboard metrics, we rely on Spring's powerful query derivation logic (e.g., `findByRoleIgnoreCase()`), completely avoiding explicit SQL strings while boosting performance and type safety.
+
+### 2. Live Admin Dashboard & Mass Broadcasting
+The Administrator interface was completely redesigned to be extremely dynamic.
+- **Admin Metrics Control Panel:** The `AdminController` calculates real-time platform statistics—like percentage bounds for enrolled students vs active faculty—and dynamically injects them into the glassmorphic UI. 
+- **Broadcast Email System:** Built on JavaMailSender (`BroadcastController`), admins can dispatch highly customized Rich-HTML broadcast emails directly to filtered cohorts (e.g., exclusively 'Students' or 'Faculty'). These executions are off-loaded to asynchronous threads and recorded immutably in a `broadcast-log.jsp` datatable for historical tracking.
+
+![Admin Dashboard Visualization](assets/images/admin_dashboard.png)
+
+### 3. Interactive Student & Faculty Portals
+The user-facing portals evolved into complete Single Page Application (SPA)-like experiences. 
+- **Student Course Progress:** Students can view visual progress bars tracking their course completion rate. When a video/lesson finishes, an async call updates the state in the backend, refilling their progress bar dynamically.
+- **Faculty Hub:** Instructors have a powerful interface to grade submissions and dispatch real-time global notifications that are immediately visible on the Student's navigation bell icon.
+
+![Student Dashboard](assets/images/student_dashboard.png)
+![Faculty Dashboard](assets/images/faculty_dashboard.png)
+
+### 4. Comprehensive Unit & Integration Testing
+We established a robust testing framework to ensure application reliability.
+- **Unit Tests:** Using Mockito, we isolated the business logic (`EmailService`, controllers) from the database layer, allowing us to test edge cases rapidly.
+- **Integration Tests:** Leveraging `MockMvc` and `@DataJpaTest`, we rigorously tested the API endpoints, ensuring role-based access control works as intended (e.g., stopping unauthorized users from accessing the `/adashboard` path).
+
+---
+
 ## 👥 Roles & Features
 
 ### 🎓 Student
