@@ -1,0 +1,206 @@
+================================================================================
+          LEARNING MANAGEMENT SYSTEM (LMS) - DAILY SUMMARY & TECHNICAL LOG
+                                Date: September 2, 2026
+================================================================================
+
+1. EXECUTIVE OVERVIEW
+--------------------------------------------------------------------------------
+Today, the Learning Management System (LMS) was fully cleaned, refactored, 
+documented, containerized with Docker, and deployed live to Render Cloud with 
+Aiven Managed MySQL.
+
+- Live Application URL: https://lms-app-by-abhi.onrender.com
+- Database Host: javaready-mysql-javaready2026.j.aivencloud.com (Port: 26871)
+- Source Repository: https://github.com/Abinash330/Learning-Management-System.git
+- Technology Stack: Spring Boot 3.3.4 LTS, Spring Security 6, Spring Data JPA,
+                    Hibernate, Apache Tomcat 10, JSP (JSTL), MySQL 8.0, Docker.
+
+
+================================================================================
+2. EVERYTHING ADDED & MODIFIED TODAY
+================================================================================
+
+A. Codebase Cleanup:
+   - Removed orphaned scratch files (Python fix scripts, test controllers, 
+     legacy dummy models like Car.java, Engine.java, Map.java).
+   - Removed duplicate/orphaned JSP stubs in webapp root.
+   - Cleaned up LmsApplication.java into standard @SpringBootApplication.
+   - Migrated screenshots from /img into /assets/images/screenshots.
+
+B. Master Documentation:
+   - Generated "LMS_Project_Comprehensive_Documentation.pdf" (2.1 MB) featuring:
+     * Full architecture diagrams & technology matrix.
+     * Comprehensive schema diagrams for all 17 JPA entities.
+     * Complete REST & MVC route inventory with role-based access table.
+     * UI screenshots gallery for Student, Faculty, and Admin portals.
+   - Completely overhauled README.md with detailed setup and deployment guide.
+
+C. Cloud Containerization (Docker):
+   - Created multi-stage "Dockerfile" (Eclipse Temurin 17 JDK -> JRE).
+   - Configured JVM memory optimization flags for free-tier cloud (-Xmx400m -Xms200m).
+   - Created ".dockerignore" to exclude build artifacts and git cache.
+
+D. Cloud & Security Configuration:
+   - Created "src/main/java/com/example/lms/config/TomcatConfig.java" for 
+     embedded Tomcat physical JSP document root resolution.
+   - Configured "SecurityConfig.java" with DispatcherType support (FORWARD, INCLUDE, 
+     ERROR, ASYNC) and role-based URL matchers.
+   - Configured "src/main/resources/application.properties" with dynamic 
+     environment variable bindings, reverse proxy headers, and cookie tracking.
+
+
+================================================================================
+3. PROBLEMS FACED TODAY & HOW THEY WERE SOLVED (STEP-BY-STEP EXPLANATION)
+================================================================================
+
+--------------------------------------------------------------------------------
+PROBLEM 1: JSP Engine Missing in Standalone Docker JAR (Compilation Failure)
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  When running the app inside Docker on Render, JSP pages would fail to compile
+  or throw 404 / internal errors.
+- ROOT CAUSE:
+  In "pom.xml", the dependency "tomcat-embed-jasper" had <scope>provided</scope>.
+  In Maven, "provided" dependencies are excluded when building standalone 
+  executable JAR files (java -jar app.jar).
+- SOLUTION:
+  Removed <scope>provided</scope> from "tomcat-embed-jasper" in pom.xml so that
+  the Jasper JSP compiler is bundled directly inside the production JAR.
+
+--------------------------------------------------------------------------------
+PROBLEM 2: Tomcat Embedded Could Not Find JSP Views in Docker Container
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  Spring MVC forwarded view requests to "/views/index.jsp", but Tomcat returned
+  404 Not Found, falling back to error dispatches and redirecting to /login.
+- ROOT CAUSE:
+  In Spring Boot standalone executable JARs, embedded Tomcat initializes its 
+  Document Base (docBase) in a temporary directory in "/tmp/". It does not 
+  automatically scan the file system for "src/main/webapp/views/".
+- SOLUTION:
+  1. Updated Dockerfile to copy "src/main/webapp" into "/app/src/main/webapp".
+  2. Created "TomcatConfig.java" using WebServerFactoryCustomizer to explicitly
+     set Tomcat's document root:
+     factory.setDocumentRoot(new File("src/main/webapp"));
+  3. Added resource mapping in pom.xml to bundle webapp into META-INF/resources.
+
+--------------------------------------------------------------------------------
+PROBLEM 3: Infinite Redirect Loop on <jsp:include> (ERR_TOO_MANY_REDIRECTS)
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  Visiting https://lms-app-by-abhi.onrender.com/ or /login caused Chrome to show
+  "net::ERR_TOO_MANY_REDIRECTS".
+- ROOT CAUSE:
+  All JSP pages start with <jsp:include page="header.jsp" />.
+  In Spring Boot 3 / Spring Security 6, internal servlet dispatches of type 
+  "DispatcherType.INCLUDE" and "DispatcherType.FORWARD" are secured by default.
+  When an unauthenticated user visited public /login, the header include was 
+  intercepted as unauthenticated, redirecting back to /login in an infinite loop.
+- SOLUTION:
+  In "SecurityConfig.java", explicitly permitted all internal dispatcher types:
+  .dispatcherTypeMatchers(
+      DispatcherType.FORWARD,
+      DispatcherType.INCLUDE,
+      DispatcherType.ERROR,
+      DispatcherType.ASYNC
+  ).permitAll()
+
+--------------------------------------------------------------------------------
+PROBLEM 4: Cloud Reverse Proxy SSL Ping-Pong Loop (HTTP vs HTTPS)
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  Redirects bounced infinitely between Cloudflare HTTPS (port 443) and Tomcat 
+  HTTP (port 10000).
+- ROOT CAUSE:
+  Render terminates SSL at its cloud router and forwards requests to the 
+  container via HTTP. Tomcat did not read "X-Forwarded-Proto: https", so it 
+  generated redirects with "http://...:10000". Render then redirected "http://" 
+  back to "https://".
+- SOLUTION:
+  In "application.properties", added:
+  - server.forward-headers-strategy=native
+  - server.tomcat.use-relative-redirects=true
+  - server.tomcat.remoteip.protocol-header=x-forwarded-proto
+  This forced Tomcat to trust proxy HTTPS headers and issue clean relative 
+  redirects (e.g., Location: /login) rather than absolute internal HTTP URLs.
+
+--------------------------------------------------------------------------------
+PROBLEM 5: Session IDs Appended to URLs (;jsessionid=...)
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  Redirect headers looked like "/login;jsessionid=94A58F...".
+- ROOT CAUSE:
+  Tomcat's default session tracking mode allows URL rewriting before cookies 
+  are confirmed.
+- SOLUTION:
+  Added "server.servlet.session.tracking-modes=cookie" in application.properties
+  to force cookie-only session management.
+
+--------------------------------------------------------------------------------
+PROBLEM 6: GitHub Push Protection Blocked Raw Aiven Database Password
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  Git rejected the commit with "remote: - GITHUB PUSH PROTECTION: Push cannot 
+  contain secrets (Aiven Service Password)".
+- ROOT CAUSE:
+  GitHub's automated secret scanner prevents hardcoded production cloud passwords
+  from being pushed to public GitHub repositories to prevent security breaches.
+- SOLUTION:
+  Configured "application.properties" with dynamic environment variable bindings:
+  spring.datasource.url=${SPRING_DATASOURCE_URL:...}
+  spring.datasource.username=${SPRING_DATASOURCE_USERNAME:...}
+  spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:...}
+  These values are securely injected into Render via the Environment Variables tab.
+
+--------------------------------------------------------------------------------
+PROBLEM 7: Experimental Spring Boot 4.0.1 Incompatibility
+--------------------------------------------------------------------------------
+- SYMPTOM:
+  Compilation errors occurred with Tomcat embedded classes when using parent 4.0.1.
+- ROOT CAUSE:
+  Spring Boot 4.0.1 is an unreleased experimental milestone.
+- SOLUTION:
+  Standardized "pom.xml" on the stable production LTS version: Spring Boot 3.3.4.
+
+
+================================================================================
+4. HOW TO VIEW & QUERY YOUR AIVEN DATABASE IN THE TERMINAL
+================================================================================
+
+Your MySQL 8.0 client is installed at:
+"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe"
+
+A. Connect Interactively:
+   mysql -h javaready-mysql-javaready2026.j.aivencloud.com -P 26871 -u avnadmin -p LMS
+   (Enter your Aiven MySQL password when prompted)
+
+B. Fast One-Liner Commands:
+
+   1. View all 17 Tables:
+      mysql -h javaready-mysql-javaready2026.j.aivencloud.com -P 26871 -u avnadmin -p LMS -e "SHOW TABLES;"
+
+   2. View Users:
+      mysql -h javaready-mysql-javaready2026.j.aivencloud.com -P 26871 -u avnadmin -p LMS -e "SELECT id, name, email, role, status FROM user_master;"
+
+   3. View Courses:
+      mysql -h javaready-mysql-javaready2026.j.aivencloud.com -P 26871 -u avnadmin -p LMS -e "SELECT id, title, instructor_id FROM courses;"
+
+   4. View Video Lectures:
+      mysql -h javaready-mysql-javaready2026.j.aivencloud.com -P 26871 -u avnadmin -p LMS -e "SELECT id, title, file_name FROM video_lectures;"
+
+
+================================================================================
+5. TEST LOGIN CREDENTIALS
+================================================================================
+
++----------+--------------------+-------------+--------------------------------+
+| Role     | Email              | Password    | Permissions                    |
++----------+--------------------+-------------+--------------------------------+
+| Admin    | admin@example.com  | password    | Full system management         |
+| Faculty  | faculty@lms.com    | faculty123  | Upload videos, grade, exams    |
+| Student  | student@lms.com    | student123  | Watch videos, submit, tests    |
++----------+--------------------+-------------+--------------------------------+
+
+================================================================================
+                              END OF DAILY LOG
+================================================================================
