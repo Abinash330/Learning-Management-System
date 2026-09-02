@@ -33,27 +33,40 @@ public class SecurityConfig {
                     "/css/**", "/js/**", "/image/**", "/images/**", "/static/**", "/assets/**",
                     "/views/**", "/api/notices", "/error"
                 ).permitAll()
-                .requestMatchers("/adashboard", "/users", "/admin-add", "/updateusers", "/edituser",
-                                 "/broadcast-email", "/broadcast-log", "/admin/exams/**", "/admin/faq/**",
-                                 "/admin-notices", "/admin-notices/**",
-                                 "/admin-courses", "/admin-courses/**",
-                                 "/admin-departments", "/admin-departments/**",
-                                 "/admin-metrics",
-                                 "/admin/videos", "/admin/videos/**",
-                                 "/admin/doubts", "/admin/doubts/**",
-                                 "/doubts/delete/**").hasRole("ADMIN")
-                .requestMatchers("/addnotice",
-                                 "/faculty-notices", "/faculty-notices/**",
-                                 "/videos", "/videos/upload", "/videos/edit/**", "/videos/delete/**",
-                                 "/doubts", "/doubts/reply/**").hasAnyRole("ADMIN", "FACULTY")
-                .requestMatchers("/fdashboard", "/f-assignments", "/f-create-assignment", "/f-grade", "/faculty/exams", "/faculty/exams/**").hasRole("FACULTY")
-                .requestMatchers("/sdashboard", "/s-courses", "/s-assignments", "/s-start-course",
-                                 "/s-premium", "/s-search", "/s-profile", "/s-submit", "/s-update-progress",
-                                 "/student/exams", "/student/exams/**",
-                                 "/student-notices",
-                                 "/s-videos", "/s-watch/**", "/s-ask-doubt").hasAnyRole("ADMIN", "STUDENT")
-                .requestMatchers("/videos/stream/**").hasAnyRole("ADMIN", "STUDENT", "FACULTY")
-                .requestMatchers("/download/notice/**").authenticated()
+                .requestMatchers(
+                    "/adashboard", "/users", "/admin-add", "/updateusers", "/edituser",
+                    "/broadcast-email", "/broadcast-log", "/admin/exams/**", "/admin/faq/**",
+                    "/admin-notices", "/admin-notices/**",
+                    "/admin-courses", "/admin-courses/**",
+                    "/admin-departments", "/admin-departments/**",
+                    "/admin-metrics",
+                    "/admin/videos", "/admin/videos/**",
+                    "/admin/doubts", "/admin/doubts/**",
+                    "/doubts/delete/**"
+                ).hasRole("ADMIN")
+                .requestMatchers(
+                    "/addnotice",
+                    "/faculty-notices", "/faculty-notices/**",
+                    "/videos", "/videos/upload", "/videos/edit/**", "/videos/delete/**",
+                    "/doubts", "/doubts/reply/**"
+                ).hasAnyRole("ADMIN", "FACULTY")
+                .requestMatchers(
+                    "/fdashboard", "/f-assignments", "/f-create-assignment", "/f-grade",
+                    "/faculty/exams", "/faculty/exams/**"
+                ).hasRole("FACULTY")
+                .requestMatchers(
+                    "/sdashboard", "/s-courses", "/s-assignments", "/s-start-course",
+                    "/s-premium", "/s-search", "/s-profile", "/s-submit", "/s-update-progress",
+                    "/student/exams", "/student/exams/**",
+                    "/student-notices",
+                    "/s-videos", "/s-watch/**", "/s-ask-doubt"
+                ).hasAnyRole("ADMIN", "STUDENT")
+                .requestMatchers(
+                    "/videos/stream/**"
+                ).hasAnyRole("ADMIN", "STUDENT", "FACULTY")
+                .requestMatchers(
+                    "/download/notice/**"
+                ).authenticated()
                 .anyRequest().authenticated()
             ).formLogin(form -> form
                 .loginPage("/login")
