@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.example.lms.model.User;
 import com.example.lms.repository.UserRepository;
 
+import jakarta.servlet.DispatcherType;
 import java.util.Optional;
-
 
 @Configuration
 @EnableWebSecurity
@@ -21,16 +21,17 @@ public class SecurityConfig {
     private UserRepository userRepository;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf ->csrf.disable())// Disable CSRF for simplicity
+            .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity
             .authorizeHttpRequests(auth -> auth
+                // Allow JSP internal forwards and error dispatches (Critical for Spring Boot 3+ JSP rendering)
+                .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                 .requestMatchers(
                     "/", "/index", "/dashboard",
                     "/login", "/register", "/about", "/contact", "/faq",
                     "/css/**", "/js/**", "/image/**", "/images/**", "/static/**", "/assets/**",
-                    "/greet/**", "/car/**", "/hello/**", "/hi/**", "/welcome/**", "/course/**",
-                    "/views/**", "/api/notices"
+                    "/views/**", "/api/notices", "/error"
                 ).permitAll()
                 .requestMatchers("/adashboard", "/users", "/admin-add", "/updateusers", "/edituser",
                                  "/broadcast-email", "/broadcast-log", "/admin/exams/**", "/admin/faq/**",
@@ -54,10 +55,10 @@ public class SecurityConfig {
                 .requestMatchers("/videos/stream/**").hasAnyRole("ADMIN", "STUDENT", "FACULTY")
                 .requestMatchers("/download/notice/**").authenticated()
                 .anyRequest().authenticated()
-            ).formLogin(form ->form
+            ).formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .usernameParameter("email") // Since user_master uses email for login
+                .usernameParameter("email")
                 .successHandler(authenticationSuccessHandler())
                 .failureUrl("/login?error=true")
                 .permitAll())
@@ -114,7 +115,6 @@ public class SecurityConfig {
             return org.springframework.security.core.userdetails.User
                     .withUsername(user.getEmail())
                     .password(user.getPassword())
-                    // Custom logic logic uses roles like "student", "faculty", "admin"
                     .roles(user.getRole().toUpperCase())
                     .disabled(user.getStatus() == null || user.getStatus() != 1)
                     .build();
@@ -123,8 +123,6 @@ public class SecurityConfig {
 
     @Bean
     public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
-        // As from previous code, the passwords seem to be plain text.
-        // Using NoOpPasswordEncoder for now so existing passwords work.
         return org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance();
     }
 }
