@@ -22,6 +22,9 @@ WORKDIR /app
 # Copy the built JAR from build stage
 COPY --from=build /app/target/*.jar app.jar
 
+# Copy webapp directory so embedded Tomcat finds physical JSP views
+COPY src/main/webapp /app/src/main/webapp
+
 # Expose the application port
 EXPOSE 8081
 
