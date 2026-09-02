@@ -1,4 +1,19 @@
-<jsp:include page="header.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<c:choose>
+    <c:when test="${sessionScope.role == 'Student'}">
+        <jsp:include page="sheader.jsp" />
+    </c:when>
+    <c:when test="${sessionScope.role == 'Faculty'}">
+        <jsp:include page="fheader.jsp" />
+    </c:when>
+    <c:when test="${sessionScope.role == 'Admin'}">
+        <jsp:include page="aheader.jsp" />
+    </c:when>
+    <c:otherwise>
+        <jsp:include page="header.jsp" />
+    </c:otherwise>
+</c:choose>
 
 <!-- Bootstrap & Icons -->
 <link rel="stylesheet" href="/css/bootstrap.min.css" />
@@ -393,9 +408,36 @@
                     </button>
                 </div>
             </form>
+
+            <c:if test="${not empty sms}">
+            <div id="successAlert" class="alert alert-success d-flex align-items-center gap-2 mt-3 rounded-3 shadow-sm" role="alert" style="animation:fadeSlideUp 0.5s ease forwards;">
+                <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                <div><strong>Message Sent!</strong> Thank you for reaching out. We'll get back to you shortly.</div>
+            </div>
+            <script>
+                // Auto-hide after 5 seconds
+                setTimeout(function() {
+                    var el = document.getElementById('successAlert');
+                    if(el) el.style.transition='opacity 0.5s', el.style.opacity='0', setTimeout(()=>el.remove(), 500);
+                }, 5000);
+            </script>
+            </c:if>
         </div>
         
     </div>
 </div>
 
-<jsp:include page="footer.jsp" />
+<c:choose>
+    <c:when test="${sessionScope.role == 'Student'}">
+        <jsp:include page="sfooter.jsp" />
+    </c:when>
+    <c:when test="${sessionScope.role == 'Faculty'}">
+        <jsp:include page="ffooter.jsp" />
+    </c:when>
+    <c:when test="${sessionScope.role == 'Admin'}">
+        <jsp:include page="afooter.jsp" />
+    </c:when>
+    <c:otherwise>
+        <jsp:include page="footer.jsp" />
+    </c:otherwise>
+</c:choose>

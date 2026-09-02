@@ -1,6 +1,7 @@
 package com.example.lms.repository;
 
 import com.example.lms.model.Notice;
+import com.example.lms.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -11,4 +12,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     List<Notice> findTop4ByOrderByNoticeDateDesc();
     List<Notice> findTop10ByOrderByIdDesc();
     List<Notice> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrderByIdDesc(String t, String d);
+    List<Notice> findByTargetAudienceInOrderByIdDesc(List<String> targetAudiences);
+    List<Notice> findByCreatedByOrderByIdDesc(User user);
 }

@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,6 +8,7 @@
     <title>My Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .profile-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 4rem 0; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
         .avatar-upload { position: relative; max-width: 150px; margin: auto; }
@@ -61,26 +63,33 @@
                                     </div>
                                 </div>
 
-                                <form>
+                                <c:if test="${not empty successMsg}">
+                                    <div class="alert alert-success alert-dismissible d-flex align-items-center gap-2 rounded-3 mb-4 shadow-sm" role="alert">
+                                        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                        <div><strong>Profile Updated!</strong> ${successMsg}</div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                </c:if>
+                                <form action="/s-update-profile" method="post">
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label class="form-label text-muted">Full Name</label>
-                                            <input type="text" class="form-control rounded-3" value="${user.name}" readonly>
+                                            <input type="text" name="name" class="form-control rounded-3" value="${user.name}">
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label text-muted">Email Address</label>
-                                            <input type="email" class="form-control rounded-3" value="${user.email}" readonly>
+                                            <input type="email" class="form-control rounded-3" value="${user.email}" readonly disabled>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label text-muted">Phone Number</label>
-                                            <input type="text" class="form-control rounded-3" value="${user.mobile}" readonly>
+                                            <input type="text" name="mobile" class="form-control rounded-3" value="${user.mobile}">
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label text-muted">Role</label>
-                                            <input type="text" class="form-control rounded-3" value="${user.role}" readonly>
+                                            <input type="text" class="form-control rounded-3" value="${user.role}" readonly disabled>
                                         </div>
                                         <div class="col-12 mt-4 text-end">
-                                            <button type="button" class="btn btn-primary rounded-pill px-4">Update Profile</button>
+                                            <button type="submit" class="btn btn-primary rounded-pill px-4"><i class="bi bi-save me-1"></i> Update Profile</button>
                                         </div>
                                     </div>
                                 </form>

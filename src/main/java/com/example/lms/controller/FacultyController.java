@@ -10,6 +10,14 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
+
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 import com.example.lms.model.AssignmentSubmission;
 import com.example.lms.model.Course;
@@ -152,5 +160,69 @@ public class FacultyController {
     @ResponseBody
     public ResponseEntity<List<Notice>> getNoticesApi() {
         return ResponseEntity.ok(noticeRepository.findTop10ByOrderByIdDesc());
+    }
+
+    @GetMapping("/faculty-notices")
+    public String facultyNotices(Model model, Principal principal) {
+        if (principal != null) {
+            Optional<User> uOpt = userRepository.findByEmail(principal.getName());
+            if (uOpt.isPresent()) {
+                User faculty = uOpt.get();
+                model.addAttribute("myNotices", noticeRepository.findByTargetAudienceInOrderByIdDesc(List.of("ALL", "FACULTY")));
+                model.addAttribute("createdNotices", noticeRepository.findByCreatedByOrderByIdDesc(faculty));
+            }
+        }
+        return "faculty-notices";
+    }
+
+    @PostMapping("/faculty-notices/add")
+    public String facultyNoticesAdd(
+            @RequestParam("title") String title, 
+            @RequestParam("description") String description,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            Principal principal) {
+            
+        Notice n = new Notice();
+        n.setTitle(title);
+        n.setDescription(description);
+        n.setNoticeDate(LocalDate.now());
+        n.setTargetAudience("STUDENT"); // Faculty can only add for students
+
+        if (principal != null) {
+            userRepository.findByEmail(principal.getName()).ifPresent(n::setCreatedBy);
+        }
+
+        if (file != null && !file.isEmpty()) {
+            try {
+                String uploadDir = System.getProperty("user.dir") + "/uploads/notices";
+                Path uploadPath = Paths.get(uploadDir);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                
+                n.setFileName(file.getOriginalFilename());
+                n.setFilePath(fileName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        noticeRepository.save(n);
+        return "redirect:/faculty-notices";
+    }
+
+    @PostMapping("/faculty-notices/delete")
+    public String facultyNoticesDelete(@RequestParam("id") Long id, Principal principal) {
+        Optional<Notice> nOpt = noticeRepository.findById(id);
+        if (nOpt.isPresent() && principal != null) {
+            Notice n = nOpt.get();
+            Optional<User> uOpt = userRepository.findByEmail(principal.getName());
+            if (uOpt.isPresent() && n.getCreatedBy() != null && n.getCreatedBy().getId().equals(uOpt.get().getId())) {
+                noticeRepository.deleteById(id);
+            }
+        }
+        return "redirect:/faculty-notices";
     }
 }

@@ -10,12 +10,23 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Sort;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.security.Principal;
+import java.util.UUID;
+
 import com.example.lms.model.Course;
+import com.example.lms.model.Department;
 import com.example.lms.model.Notice;
 import com.example.lms.model.User;
 import com.example.lms.repository.ContactRepository;
+import com.example.lms.repository.CourseRepository;
+import com.example.lms.repository.DepartmentRepository;
 import com.example.lms.repository.CourseRepository;
 import com.example.lms.repository.EnrollmentRepository;
 import com.example.lms.repository.NoticeRepository;
@@ -34,6 +45,8 @@ public class AdminController {
     private NoticeRepository noticeRepository;
     @Autowired
     private ContactRepository contactRepository;
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     @GetMapping("/adashboard")
     public String adashboard(Model model) {
@@ -183,27 +196,62 @@ public class AdminController {
         return "redirect:/users";
     }
 
-    @GetMapping("/addnotice")
-    public String addnotice() {
-        return "addnotice";
+    @GetMapping("/admin-notices")
+    public String adminNotices(Model model) {
+        model.addAttribute("notices", noticeRepository.findAll(Sort.by(Sort.Direction.DESC, "id")));
+        return "admin-notices";
     }
 
-    @PostMapping("/addnotice")
-    public String addnotice_save(@RequestParam("title") String title, @RequestParam("description") String description,
-            Model model) {
+    @PostMapping("/admin-notices/add")
+    public String adminNoticesAdd(
+            @RequestParam("title") String title, 
+            @RequestParam("description") String description,
+            @RequestParam("targetAudience") String targetAudience,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            Principal principal) {
+            
         Notice n = new Notice();
         n.setTitle(title);
         n.setDescription(description);
         n.setNoticeDate(LocalDate.now());
+        n.setTargetAudience(targetAudience);
+
+        if (principal != null) {
+            userRepository.findByEmail(principal.getName()).ifPresent(n::setCreatedBy);
+        }
+
+        if (file != null && !file.isEmpty()) {
+            try {
+                String uploadDir = System.getProperty("user.dir") + "/uploads/notices";
+                Path uploadPath = Paths.get(uploadDir);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                
+                n.setFileName(file.getOriginalFilename());
+                n.setFilePath(fileName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         noticeRepository.save(n);
-        model.addAttribute("message", "Notice published successfully!");
-        return "addnotice";
+        return "redirect:/admin-notices";
+    }
+
+    @PostMapping("/admin-notices/delete")
+    public String adminNoticesDelete(@RequestParam("id") Long id) {
+        noticeRepository.deleteById(id);
+        return "redirect:/admin-notices";
     }
 
     @GetMapping("/admin-courses")
     public String adminCourses(Model model) {
         model.addAttribute("courses", courseRepository.findAll());
         model.addAttribute("facultyList", userRepository.findByRoleIgnoreCaseAndStatus("Faculty", 1));
+        model.addAttribute("departmentList", departmentRepository.findAll());
         return "admin-courses";
     }
 
@@ -217,16 +265,43 @@ public class AdminController {
     public String adminCoursesAdd(
             @RequestParam("title") String title,
             @RequestParam("description") String description,
-            @RequestParam("instructor_id") int instructorId) {
+            @RequestParam("instructor_id") int instructorId,
+            @RequestParam(value = "department_id", required = false) Integer departmentId) {
         Optional<User> instructor = userRepository.findById(instructorId);
         if (instructor.isPresent()) {
             Course c = new Course();
             c.setTitle(title);
             c.setDescription(description);
             c.setInstructor(instructor.get());
+            if (departmentId != null && departmentId > 0) {
+                departmentRepository.findById(departmentId).ifPresent(c::setDepartment);
+            }
             courseRepository.save(c);
         }
         return "redirect:/admin-courses";
+    }
+
+    @GetMapping("/admin-departments")
+    public String adminDepartments(Model model) {
+        model.addAttribute("departments", departmentRepository.findAll());
+        return "admin-departments";
+    }
+
+    @PostMapping("/admin-departments/add")
+    public String adminDepartmentsAdd(
+            @RequestParam("name") String name,
+            @RequestParam("description") String description) {
+        Department d = new Department();
+        d.setName(name);
+        d.setDescription(description);
+        departmentRepository.save(d);
+        return "redirect:/admin-departments";
+    }
+
+    @PostMapping("/admin-departments/delete")
+    public String adminDepartmentsDelete(@RequestParam("id") int id) {
+        departmentRepository.deleteById(id);
+        return "redirect:/admin-departments";
     }
 
     @GetMapping("/admin-metrics")

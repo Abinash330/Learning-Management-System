@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <link rel="stylesheet" href="/css/bootstrap.min.css" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -92,6 +93,7 @@
         padding: 0.55rem 1.5rem;
         transition: all 0.3s ease;
         background: white;
+        text-decoration: none;
     }
 
     .btn-login-outline:hover {
@@ -105,18 +107,21 @@
     .btn-signup-gradient {
         border-radius: 50px;
         background: linear-gradient(135deg, #1e1b4b, #4f46e5);
-        color: white;
+        color: white !important;
         font-weight: 700;
         padding: 0.55rem 1.75rem;
         border: none;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
     }
 
     .btn-signup-gradient:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
-        color: white;
+        color: white !important;
     }
     
     @media (max-width: 991px) {
@@ -141,16 +146,37 @@
                 <li><a href="/contact" class="nav-link premium-nav-link">Contact</a></li>
             </ul>
 
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-4" role="search">
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-4" role="search" action="/s-search" method="GET">
                 <div class="position-relative">
                     <i class="bi bi-search position-absolute text-muted" style="top: 50%; left: 1.1rem; transform: translateY(-50%);"></i>
-                    <input type="search" class="form-control search-pill ps-5 pe-4" placeholder="Search courses..." aria-label="Search">
+                    <input type="search" name="q" class="form-control search-pill ps-5 pe-4" placeholder="Search courses..." aria-label="Search">
                 </div>
             </form>
 
             <div class="text-end d-flex gap-2 justify-content-center">
-                <a href="/login" class="btn btn-login-outline">Log In</a>
-                <a href="/register" class="btn btn-signup-gradient">Sign Up</a>
+                <c:choose>
+                    <c:when test="${not empty sessionScope.role}">
+                        <c:choose>
+                            <c:when test="${sessionScope.role == 'Student'}">
+                                <c:set var="dashUrl" value="/sdashboard" />
+                            </c:when>
+                            <c:when test="${sessionScope.role == 'Faculty'}">
+                                <c:set var="dashUrl" value="/fdashboard" />
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="dashUrl" value="/adashboard" />
+                            </c:otherwise>
+                        </c:choose>
+                        <a href="${dashUrl}" class="btn btn-login-outline">Dashboard</a>
+                        <form action="/logout" method="GET" class="m-0 p-0 d-inline">
+                            <button type="submit" class="btn btn-signup-gradient">Logout</button>
+                        </form>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/login" class="btn btn-login-outline">Log In</a>
+                        <a href="/register" class="btn btn-signup-gradient">Sign Up</a>
+                    </c:otherwise>
+                </c:choose>
             </div>
 
         </div>

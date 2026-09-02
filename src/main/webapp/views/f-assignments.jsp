@@ -229,7 +229,7 @@
                     <form action="/f-create-assignment" method="post">
                         <div class="mb-3">
                             <label class="form-label fw-bold small">Select Course</label>
-                            <select name="course.id" class="form-select input-custom" required>
+                            <select name="course_id" class="form-select input-custom" required>
                                 <option value="" disabled selected>-- Choose a course --</option>
                                 <c:forEach var="course" items="${myCourses}">
                                     <option value="${course.id}">${course.title}</option>
@@ -246,7 +246,7 @@
                         </div>
                         <div class="mb-4">
                             <label class="form-label fw-bold small">Due Date</label>
-                            <input type="date" name="dueDate" class="form-control input-custom" required>
+                            <input type="date" name="due_date" class="form-control input-custom" required>
                         </div>
                         <button type="submit" class="btn btn-green w-100 py-3">
                             <i class="bi bi-send-fill me-2"></i> Publish Assignment

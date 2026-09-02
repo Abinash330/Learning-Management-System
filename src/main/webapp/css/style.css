@@ -1,0 +1,16 @@
+/* General styling fixes for LMS */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure images don't overflow */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Base utility padding */
+.p-custom {
+    padding: 1.5rem;
+}

@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,7 +42,7 @@
     <!-- Search Hero -->
     <div class="search-hero">
         <div class="container">
-            <h1 class="fw-bold mb-1" style="letter-spacing:-1px;">🔍 Search EduPro</h1>
+            <h1 class="fw-bold mb-1" style="letter-spacing:-1px;"><i class="bi bi-search me-2"></i>Search EduPro</h1>
             <p style="opacity:0.75;" class="mb-4">Find courses, notices, and resources across the platform</p>
             <form action="/s-search" method="get" class="search-box">
                 <div class="input-group shadow-lg">
@@ -88,7 +89,7 @@
                                     <div class="result-card h-100">
                                         <div class="d-flex gap-3 align-items-start">
                                             <div class="course-icon" style="background:hsl(${(loop.index * 61 + 230)%360},70%,92%);color:hsl(${(loop.index * 61 + 230)%360},70%,40%);">
-                                                📚
+                                                <i class="bi bi-book-fill"></i>
                                             </div>
                                             <div class="flex-fill">
                                                 <h6 class="fw-bold mb-1" style="font-size:0.92rem;">${course.title}</h6>
@@ -125,7 +126,7 @@
                                     <div class="result-card">
                                         <div class="d-flex gap-3 align-items-start">
                                             <div class="course-icon" style="background:#fef3c7;color:#d97706;font-size:1.2rem;">
-                                                📢
+                                                <i class="bi bi-megaphone-fill"></i>
                                             </div>
                                             <div>
                                                 <h6 class="fw-bold mb-1" style="font-size:0.9rem;">${notice.title}</h6>

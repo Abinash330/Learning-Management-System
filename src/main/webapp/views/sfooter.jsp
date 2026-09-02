@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!-- <link rel="stylesheet" href="/css/bootstrap.min.css" />
 <style>
     /* Make all footer text white */
@@ -192,7 +193,7 @@
         </div>
 
         <div class="d-flex flex-column flex-sm-row justify-content-between py-4 mt-4 border-top-custom">
-            <p>© 2026 Student Portal. Crafted with excellence.</p>
+            <p>&copy; 2026 Student Portal. Crafted with excellence.</p>
             <ul class="list-unstyled d-flex">
                 <li class="ms-3">
                     <a href="#" aria-label="Instagram">

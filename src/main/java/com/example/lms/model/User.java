@@ -23,6 +23,10 @@ public class User {
     @Column(name = "is_online", columnDefinition = "int default 0")
     private Integer isOnline; // 1 for online, 0 for offline
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "department_id")
+    private Department department;
+
     public User() {}
     public User(Integer id, String name, String email, String mobile, String password, String role, Integer status, Integer isOnline) {
         this.id = id;
@@ -33,6 +37,17 @@ public class User {
         this.role = role;
         this.status = status;
         this.isOnline = isOnline;
+    }
+    public User(Integer id, String name, String email, String mobile, String password, String role, Integer status, Integer isOnline, Department department) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.mobile = mobile;
+        this.password = password;
+        this.role = role;
+        this.status = status;
+        this.isOnline = isOnline;
+        this.department = department;
     }
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -50,4 +65,6 @@ public class User {
     public void setStatus(Integer status) { this.status = status; }
     public Integer getIsOnline() { return isOnline; }
     public void setIsOnline(Integer isOnline) { this.isOnline = isOnline; }
+    public Department getDepartment() { return department; }
+    public void setDepartment(Department department) { this.department = department; }
 }

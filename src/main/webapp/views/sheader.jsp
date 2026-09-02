@@ -78,7 +78,9 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link rel="stylesheet" href="/css/bootstrap.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <style>
     :root {
@@ -181,10 +183,15 @@
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/sdashboard" class="nav-link px-3 text-white">Dashboard</a></li>
-                <li><a href="/s-courses" class="nav-link px-3 text-white">My Courses</a></li>
-                <li><a href="/s-assignments" class="nav-link px-3 text-white">Assignments</a></li>
-                <li><a href="/contact" class="nav-link px-3 text-white-50">Support</a></li>
+                <li><a href="/sdashboard" class="nav-link px-2 text-white">Dashboard</a></li>
+                <li><a href="/s-browse-courses" class="nav-link px-2 text-white"><i class="bi bi-collection me-1"></i>Browse Courses</a></li>
+                <li><a href="/s-courses" class="nav-link px-2 text-white">My Courses</a></li>
+                <li><a href="/s-assignments" class="nav-link px-2 text-white">Assignments</a></li>
+                <li><a href="/student-exams" class="nav-link px-2 text-white">My Exams</a></li>
+                <li><a href="/s-videos" class="nav-link px-2 text-white"><i class="bi bi-play-circle-fill me-1"></i>Videos</a></li>
+                <li><a href="/student-notices" class="nav-link px-2 text-white"><i class="bi bi-megaphone me-1"></i>Notices</a></li>
+                <li><a href="/faq" class="nav-link px-2 text-white">FAQ</a></li>
+                <li><a href="/contact" class="nav-link px-2 text-white">Support</a></li>
             </ul>
 
             <form action="/s-search" method="GET" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 d-flex" role="search">

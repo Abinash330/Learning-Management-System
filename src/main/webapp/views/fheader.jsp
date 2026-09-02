@@ -94,7 +94,11 @@
         <ul class="nav mb-0 d-none d-lg-flex mx-auto">
             <li><a href="/fdashboard" class="nav-link"><i class="fas fa-th-large me-2"></i>Dashboard</a></li>
             <li><a href="/f-assignments" class="nav-link"><i class="fas fa-book me-2"></i>Assignments</a></li>
-            <li><a href="/addnotice" class="nav-link"><i class="fas fa-bullhorn me-2"></i>Post Notice</a></li>
+            <li><a href="/faculty/exams" class="nav-link"><i class="fas fa-file-signature me-2"></i>Exams</a></li>
+            <li><a href="/videos" class="nav-link"><i class="fas fa-video me-2"></i>Videos</a></li>
+            <li><a href="/doubts" class="nav-link"><i class="fas fa-question-circle me-2"></i>Doubts</a></li>
+            <li><a href="/faculty-notices" class="nav-link"><i class="fas fa-bullhorn me-2"></i>Notice Board</a></li>
+            <li><a href="/faq" class="nav-link"><i class="fas fa-question-circle me-2"></i>FAQ</a></li>
         </ul>
 
         <!-- Right Controls -->

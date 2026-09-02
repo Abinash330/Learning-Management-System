@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Uploads & Runtime Assets ###
+uploads/*
+!uploads/.gitkeep
+uploads/videos/*
+!uploads/videos/.gitkeep

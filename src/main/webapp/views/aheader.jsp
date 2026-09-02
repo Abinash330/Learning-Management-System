@@ -121,10 +121,15 @@
             <i class="bi bi-hexagon-fill me-2 fs-4"></i> EduPro<span style="color:#1e293b;-webkit-text-fill-color:#1e293b;">Admin</span>
         </a>
 
-        <ul class="nav mb-0 justify-content-center d-none d-lg-flex">
+        <ul class="nav mb-0 justify-content-center d-flex flex-wrap gap-1">
             <li><a href="/adashboard" class="nav-link nav-link-custom"><i class="bi bi-grid-1x2-fill me-1"></i> Dashboard</a></li>
             <li><a href="/users" class="nav-link nav-link-custom"><i class="bi bi-people-fill me-1"></i> Data Center</a></li>
-            <li><a href="/addnotice" class="nav-link nav-link-custom"><i class="bi bi-broadcast me-1"></i> Publisher</a></li>
+            <li><a href="/admin/exams/monitor" class="nav-link nav-link-custom"><i class="bi bi-activity me-1"></i> Monitoring</a></li>
+            <li><a href="/admin/videos" class="nav-link nav-link-custom"><i class="bi bi-camera-video-fill me-1"></i> Videos</a></li>
+            <li><a href="/admin/doubts" class="nav-link nav-link-custom"><i class="bi bi-chat-dots-fill me-1"></i> Doubts</a></li>
+            <li><a href="/admin-departments" class="nav-link nav-link-custom"><i class="bi bi-building me-1"></i> Departments</a></li>
+            <li><a href="/admin-notices" class="nav-link nav-link-custom"><i class="bi bi-broadcast me-1"></i> Notice Board</a></li>
+            <li><a href="/faq" class="nav-link nav-link-custom"><i class="bi bi-question-circle me-1"></i> FAQs</a></li>
         </ul>
 
         <div class="d-flex align-items-center gap-2 gap-md-3">

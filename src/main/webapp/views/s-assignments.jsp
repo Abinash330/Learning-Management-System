@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,9 +67,9 @@
             <!-- Filter Tabs -->
             <div class="d-flex gap-2 mb-4 flex-wrap">
                 <button class="filter-tab active" onclick="filterCards(this,'all')" id="tab-all">All</button>
-                <button class="filter-tab" onclick="filterCards(this,'pending')">⏳ Pending</button>
-                <button class="filter-tab" onclick="filterCards(this,'submitted')">📤 Submitted</button>
-                <button class="filter-tab" onclick="filterCards(this,'graded')">✅ Graded</button>
+                <button class="filter-tab" onclick="filterCards(this,'pending')"><i class="bi bi-hourglass-split me-1"></i> Pending</button>
+                <button class="filter-tab" onclick="filterCards(this,'submitted')"><i class="bi bi-upload me-1"></i> Submitted</button>
+                <button class="filter-tab" onclick="filterCards(this,'graded')"><i class="bi bi-check-circle me-1"></i> Graded</button>
             </div>
 
             <c:choose>
@@ -114,13 +115,13 @@
                                                 <span class="small text-muted"><i class="bi bi-calendar3 me-1"></i>Due: <strong>${a.dueDate}</strong></span>
                                                 <c:choose>
                                                     <c:when test="${a.subStatus == 'graded'}">
-                                                        <span class="status-badge bg-success text-white">✔ GRADED</span>
+                                                        <span class="status-badge bg-success text-white"><i class="bi bi-patch-check-fill me-1"></i>GRADED</span>
                                                     </c:when>
                                                     <c:when test="${a.subStatus == 'submitted'}">
-                                                        <span class="status-badge bg-primary text-white">📤 SUBMITTED</span>
+                                                        <span class="status-badge bg-primary text-white"><i class="bi bi-upload me-1"></i>SUBMITTED</span>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <span class="status-badge bg-warning text-dark">⏳ PENDING</span>
+                                                        <span class="status-badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i>PENDING</span>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </div>
@@ -143,8 +144,8 @@
                                             <div class="submit-area">
                                                 <p class="small fw-bold text-muted mb-2">
                                                     <c:choose>
-                                                        <c:when test="${a.subStatus == 'submitted'}">✏️ Edit your submission:</c:when>
-                                                        <c:otherwise>📝 Write your answer:</c:otherwise>
+                                                        <c:when test="${a.subStatus == 'submitted'}"><i class="bi bi-pencil-square me-1"></i> Edit your submission:</c:when>
+                                                        <c:otherwise><i class="bi bi-pencil me-1"></i> Write your answer:</c:otherwise>
                                                     </c:choose>
                                                 </p>
                                                 <form action="/s-submit" method="post">

@@ -100,6 +100,7 @@
                         <tr>
                             <th>#</th>
                             <th>Course Info</th>
+                            <th>Department</th>
                             <th>Description</th>
                             <th>Instructor</th>
                             <th>Enrollments</th>
@@ -117,13 +118,16 @@
                                     </div>
                                 </td>
                                 <td>
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary fw-bold border border-secondary border-opacity-25 pb-1 px-2 rounded-pill"><i class="bi bi-building me-1"></i>${empty course.department ? 'General' : course.department.name}</span>
+                                </td>
+                                <td>
                                     <div class="small text-muted" style="max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${course.description}</div>
                                 </td>
                                 <td>
                                     <span class="badge bg-info bg-opacity-10 text-info fw-bold"><i class="bi bi-person-video3 me-1"></i>${empty course.instructor.name ? 'Unassigned' : course.instructor.name}</span>
                                 </td>
                                 <td>
-                                    <span class="fw-bold text-primary">${course.enrollments}</span>
+                                    <span class="fw-bold text-primary">${empty course.enrolledCount ? 0 : course.enrolledCount}</span>
                                 </td>
                                 <td class="text-end">
                                     <form method="post" action="/admin-courses/delete" class="m-0 p-0 d-inline">
@@ -160,8 +164,17 @@
                             <textarea name="description" class="form-control rounded-3" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">Assign Department</label>
+                            <select name="department_id" class="form-select rounded-3">
+                                <option value="" selected>General (No Department)</option>
+                                <c:forEach var="d" items="${departmentList}">
+                                    <option value="${d.id}">${d.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label fw-bold small text-muted">Assign Faculty</label>
-                            <select name="instructor.id" class="form-select rounded-3" required>
+                            <select name="instructor_id" class="form-select rounded-3" required>
                                 <option value="" disabled selected>Select Faculty Member</option>
                                 <c:forEach var="f" items="${facultyList}">
                                     <option value="${f.id}">${f.name}</option>

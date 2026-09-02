@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.lms.model.Contact;
+import com.example.lms.model.FAQ;
 import com.example.lms.model.User;
 import com.example.lms.repository.ContactRepository;
+import com.example.lms.repository.FAQRepository;
 import com.example.lms.repository.UserRepository;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.Arrays;
 
 @Controller
 public class AnoController {
@@ -28,6 +31,9 @@ public class AnoController {
 
     @Autowired
     private ContactRepository contactRepository;
+
+    @Autowired
+    private FAQRepository faqRepository;
 
     @GetMapping("/test")
     public ModelAndView test() {
@@ -121,6 +127,7 @@ public class AnoController {
             if (user.getStatus() != null && user.getStatus() == 1) {
                 session.setAttribute("name", user.getName());
                 session.setAttribute("email", user.getEmail());
+                session.setAttribute("role", user.getRole());
 
                 user.setIsOnline(1);
                 userRepository.save(user);
@@ -174,7 +181,17 @@ public class AnoController {
     }
 
     @GetMapping("/faq")
-    public String faq() {
+    public String faq(HttpSession session, Model model) {
+        String userRole = (String) session.getAttribute("role");
+        List<String> roles = new ArrayList<>();
+        roles.add("All");
+        
+        if (userRole != null) {
+            roles.add(userRole);
+        }
+        
+        List<FAQ> faqs = faqRepository.findByRoleIn(roles);
+        model.addAttribute("faqs", faqs);
         return "faq";
     }
 

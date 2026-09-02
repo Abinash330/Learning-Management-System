@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,8 +44,7 @@
         .progress-fill.completed {
             background: linear-gradient(90deg, #10b981, #059669);
         }
-        .btn-update { border:2px solid #7c3aed; color:#7c3aed; background:transparent; border-radius:50px; font-weight:700; font-size:0.8rem; padding:0.35rem 1rem; transition:all 0.25s; }
-        .btn-update:hover { background:#7c3aed; color:white; }
+
         .btn-resume { background:linear-gradient(135deg,#7c3aed,#4f46e5); color:white; border:none; border-radius:50px; font-weight:700; padding:0.5rem 1.25rem; width:100%; transition:all 0.3s; }
         .btn-resume:hover { transform:translateY(-2px); box-shadow:0 8px 18px rgba(109,40,217,0.3); color:white; }
         .completed-badge { background:linear-gradient(135deg,#10b981,#059669); color:white; border:none; border-radius:50px; font-weight:700; padding:0.5rem 1.25rem; width:100%; }
@@ -109,11 +109,11 @@
                         <div class="col-md-6 col-lg-4" data-progress="${prog}">
                             <div class="course-card h-100">
                                 <div class="course-banner" style="background:linear-gradient(135deg, hsl(${(loop.index * 47 + 220) % 360},70%,30%), hsl(${(loop.index * 47 + 260) % 360},70%,50%));">
-                                    <span style="z-index:1;font-size:2.5rem;">📚</span>
+                                    <i class="bi bi-book-fill" style="z-index:1;font-size:2.5rem;color:rgba(255,255,255,0.7);"></i>
                                 </div>
                                 <div class="p-3 flex-fill d-flex flex-column">
-                                    <h6 class="fw-bold mb-1 mt-1" style="font-size:0.92rem;">${course.title}</h6>
-                                    <p class="small text-muted mb-3" style="font-size:0.78rem;flex-grow:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${course.description}</p>
+                                    <h6 class="fw-bold mb-1 mt-1" style="font-size:0.92rem;">${course.course.title}</h6>
+                                    <p class="small text-muted mb-3" style="font-size:0.78rem;flex-grow:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${course.course.description}</p>
 
                                     <!-- Progress Bar -->
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -130,15 +130,11 @@
                                             <button class="completed-badge mb-2"><i class="bi bi-patch-check-fill me-2"></i>Completed!</button>
                                         </c:when>
                                         <c:otherwise>
-                                            <a href="/s-start-course?id=${course.id}" class="btn btn-resume mb-2">
+                                            <a href="/s-start-course?id=${course.course.id}" class="btn btn-resume mb-2">
                                                 <i class="bi bi-play-fill me-1"></i> Continue Learning
                                             </a>
                                         </c:otherwise>
                                     </c:choose>
-                                    <button class="btn-update"
-                                        onclick="openProgressModal(${course.id}, '${course.title}', ${prog})">
-                                        <i class="bi bi-pencil me-1"></i> Update Progress
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -148,28 +144,6 @@
         </c:choose>
     </div>
 
-    <!-- Update Progress Modal -->
-    <div class="modal fade" id="progressModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content shadow-lg">
-                <div class="modal-header border-0 px-4 pt-4 pb-2">
-                    <h5 class="modal-title fw-bold" id="progressModalTitle">Update Progress</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body px-4 pb-4">
-                    <form action="/s-update-progress" method="post" id="progressForm">
-                        <input type="hidden" name="course.id" id="modalCourseId">
-                        <label class="small fw-bold text-muted mb-2 d-block">Progress: <span id="sliderVal">0</span>%</label>
-                        <input type="range" name="progress" id="progressSlider" min="0" max="100" value="0"
-                            class="form-range mb-3" style="accent-color:#7c3aed;">
-                        <button type="submit" class="btn btn-resume">
-                            <i class="bi bi-check-lg me-1"></i> Save Progress
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <jsp:include page="sfooter.jsp" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -188,19 +162,6 @@
             document.getElementById('inProgressStat').textContent = inProgress;
         });
 
-        // Progress modal
-        const modal    = new bootstrap.Modal(document.getElementById('progressModal'));
-        const slider   = document.getElementById('progressSlider');
-        const sliderV  = document.getElementById('sliderVal');
-        slider.addEventListener('input', () => sliderV.textContent = slider.value);
-
-        function openProgressModal(courseId, title, current) {
-            document.getElementById('progressModalTitle').textContent = '✏️ ' + title;
-            document.getElementById('modalCourseId').value = courseId;
-            slider.value = current;
-            sliderV.textContent = current;
-            modal.show();
-        }
     </script>
 </body>
 </html>

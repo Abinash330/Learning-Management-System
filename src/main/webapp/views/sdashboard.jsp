@@ -114,8 +114,8 @@
                                 <i class="fas fa-certificate fa-lg"></i>
                             </div>
                             <div>
-                                <h6 class="text-muted mb-0">Certificates</h6>
-                                <h3 class="fw-bold mb-0">1</h3>
+                                <h6 class="text-muted mb-0">Active Exams</h6>
+                                <h3 class="fw-bold mb-0">${activeExams}</h3>
                             </div>
                         </div>
                     </div>
@@ -127,8 +127,8 @@
                                 <i class="fas fa-clock fa-lg"></i>
                             </div>
                             <div>
-                                <h6 class="text-muted mb-0">Hours Spent</h6>
-                                <h3 class="fw-bold mb-0">12.5</h3>
+                                <h6 class="text-muted mb-0">Assignments</h6>
+                                <h3 class="fw-bold mb-0">${totalAssignments}</h3>
                             </div>
                         </div>
                     </div>
@@ -145,80 +145,41 @@
                         <canvas id="progressChart" style="max-height: 250px;"></canvas>
                     </div>
 
-                    <div class="card border-0 shadow-sm rounded-4 mb-3">
-                        <div class="row g-0 align-items-center">
-                            <div class="col-md-3">
-                                <div class="bg-dark text-white d-flex align-items-center justify-content-center h-100 p-4 rounded-start"
-                                    style="min-height: 120px;">
-                                    <i class="fab fa-java fa-3x"></i>
-                                </div>
+                    <c:choose>
+                        <c:when test="${empty enrolledCourses}">
+                            <div class="alert alert-light text-center py-5 border shadow-sm rounded-4">
+                                <i class="fas fa-book-open fa-3x text-muted mb-3 d-block"></i>
+                                <h6>No courses enrolled yet.</h6>
+                                <a href="/s-search" class="btn btn-primary mt-2 rounded-pill px-4">Explore Courses</a>
                             </div>
-                            <div class="col-md-9">
-                                <div class="card-body">
-                                    <h5 class="card-title fw-bold">Advanced Java Programming</h5>
-                                    <p class="card-text text-muted small">Chapter 4: Streams & Lambda Expressions</p>
-                                    <div class="progress mb-2">
-                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 65%"
-                                            aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">65% Complete</small>
-                                        <a href="/s-start-course" class="btn btn-sm btn-primary rounded-pill px-3">Resume</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card border-0 shadow-sm rounded-4 mb-3">
-                        <div class="row g-0 align-items-center">
-                            <div class="col-md-3">
-                                <div class="bg-warning text-dark d-flex align-items-center justify-content-center h-100 p-4 rounded-start"
-                                    style="min-height: 120px;">
-                                    <i class="fab fa-js fa-3x"></i>
-                                </div>
-                            </div>
-                            <div class="col-md-9">
-                                <div class="card-body">
-                                    <h5 class="card-title fw-bold">Modern JavaScript (ES6+)</h5>
-                                    <p class="card-text text-muted small">Module 2: Async/Await</p>
-                                    <div class="progress mb-2">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 30%"
-                                            aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">30% Complete</small>
-                                        <a href="/s-start-course" class="btn btn-sm btn-warning text-white rounded-pill px-3">Resume</a>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="enrollment" items="${enrolledCourses}">
+                                <div class="card border-0 shadow-sm rounded-4 mb-3">
+                                    <div class="row g-0 align-items-center">
+                                        <div class="col-md-3">
+                                            <div class="bg-primary text-white d-flex align-items-center justify-content-center h-100 p-4 rounded-start" style="min-height: 120px;">
+                                                <i class="fas fa-laptop-code fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="card-body">
+                                                <h5 class="card-title fw-bold">${enrollment.course.title}</h5>
+                                                <p class="card-text text-muted small mb-3">Instructor: ${enrollment.course.instructor.name}</p>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: ${enrollment.progress}%" aria-valuenow="${enrollment.progress}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <small class="text-muted fw-bold">${enrollment.progress}% Complete</small>
+                                                    <a href="/s-start-course?id=${enrollment.course.id}" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold">Resume</a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card border-0 shadow-sm rounded-4 mb-3">
-                        <div class="row g-0 align-items-center">
-                            <div class="col-md-3">
-                                <div class="bg-info text-white d-flex align-items-center justify-content-center h-100 p-4 rounded-start"
-                                    style="min-height: 120px;">
-                                    <i class="fab fa-react fa-3x"></i>
-                                </div>
-                            </div>
-                            <div class="col-md-9">
-                                <div class="card-body">
-                                    <h5 class="card-title fw-bold">React JS for Beginners</h5>
-                                    <p class="card-text text-muted small">Introduction to Components</p>
-                                    <div class="progress mb-2">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 10%"
-                                            aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">10% Complete</small>
-                                        <a href="/s-start-course" class="btn btn-sm btn-info text-white rounded-pill px-3">Resume</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
 
                 </div>
 
@@ -226,19 +187,21 @@
                 <div class="col-lg-4">
                     <div class="card border-0 shadow-sm rounded-4 mb-4">
                         <div class="card-body p-4">
-                            <h5 class="fw-bold mb-3">Recent Activity</h5>
-                            <div class="activity-item pb-3 mb-3">
-                                <small class="text-muted d-block">Today, 10:30 AM</small>
-                                <strong>Completed Quiz</strong> for Java Basics.
-                            </div>
-                            <div class="activity-item pb-3 mb-3">
-                                <small class="text-muted d-block">Yesterday, 4:15 PM</small>
-                                <strong>Watched Lecture</strong> on Spring MVC.
-                            </div>
-                            <div class="activity-item">
-                                <small class="text-muted d-block">Feb 09, 2:00 PM</small>
-                                <strong>Joined Course</strong> Modern JavaScript.
-                            </div>
+                            <h5 class="fw-bold mb-3">Recent Announcements</h5>
+                            <c:choose>
+                                <c:when test="${empty notices}">
+                                    <p class="text-muted small">No recent announcements.</p>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="notice" items="${notices}">
+                                        <div class="activity-item pb-3 mb-3 border-bottom">
+                                            <small class="text-muted d-block"><i class="far fa-clock me-1"></i>${notice.noticeDate}</small>
+                                            <strong class="d-block mt-1">${notice.title}</strong>
+                                            <a href="/student-notices" class="text-decoration-none d-block small mt-1">View details <i class="fas fa-chevron-right ms-1"></i></a>
+                                        </div>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
 
