@@ -25,8 +25,13 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity
             .authorizeHttpRequests(auth -> auth
-                // Allow JSP internal forwards and error dispatches (Critical for Spring Boot 3+ JSP rendering)
-                .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
+                // Allow all internal JSP dispatches including FORWARD, INCLUDE (for <jsp:include>), ERROR and ASYNC
+                .dispatcherTypeMatchers(
+                    DispatcherType.FORWARD,
+                    DispatcherType.INCLUDE,
+                    DispatcherType.ERROR,
+                    DispatcherType.ASYNC
+                ).permitAll()
                 .requestMatchers(
                     "/", "/index", "/dashboard",
                     "/login", "/register", "/about", "/contact", "/faq",
