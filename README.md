@@ -7,7 +7,10 @@
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple.svg)](https://getbootstrap.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> A full-featured, enterprise-grade, role-based **Learning Management System** engineered with **Spring Boot**, **Spring Data JPA**, **MySQL 8**, **Spring Security**, and modern **Bootstrap 5**. Designed for seamless academic orchestration across **Students**, **Faculty**, and **Administrators**.
+> A full-featured, enterprise-grade, role-based **Learning Management System** engineered with **Spring Boot**, **Spring Data JPA**, **MySQL 8 / TiDB**, **Spring Security**, and modern **Bootstrap 5**. Designed for seamless academic orchestration across **Students**, **Faculty**, and **Administrators**.
+>
+> 🌐 **Live Production URL:** [https://lms-app-by-abhi.onrender.com](https://lms-app-by-abhi.onrender.com)
+> 🚀 **Render Web Service:** `lms-app_by-Abhi` (Service ID: `srv-dabu40qfngtc73fadqog`)
 
 ---
 
