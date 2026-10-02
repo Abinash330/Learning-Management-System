@@ -1,19 +1,16 @@
-# ── Stage 1: Build the Application JAR ──
-FROM eclipse-temurin:17-jdk-jammy AS build
+# ── Stage 1: Build the Application JAR with pre-installed Maven ──
+FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy Maven wrapper and POM first for layer caching
-COPY pom.xml mvnw mvnw.cmd ./
-COPY .mvn .mvn
+# Copy pom.xml and dependencies
+COPY pom.xml ./
+RUN mvn dependency:go-offline -B || true
 
-# Make mvnw executable
-RUN chmod +x ./mvnw
-
-# Copy source code
-COPY src src
+# Copy source code and webapp resources
+COPY src ./src
 
 # Package the application skipping tests
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests -B
 
 # ── Stage 2: Minimal Production Runtime ──
 FROM eclipse-temurin:17-jre-jammy
@@ -25,11 +22,11 @@ COPY --from=build /app/target/*.jar app.jar
 # Copy webapp directory so embedded Tomcat finds physical JSP views
 COPY src/main/webapp /app/src/main/webapp
 
-# Expose the application port
+# Expose port (Render injects $PORT dynamically)
 EXPOSE 8081
 
-# Optimize JVM memory for Render Free Tier (512MB RAM)
-ENV JAVA_OPTS="-Xmx400m -Xms200m -XX:+UseG1GC"
+# Optimize JVM memory for Render Free Tier (512MB RAM limit)
+ENV JAVA_OPTS="-Xmx380m -Xms180m -XX:+UseG1GC"
 
 # Run Spring Boot application
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
