@@ -1,8 +1,11 @@
 package com.example.lms.repository;
 
-import com.example.lms.model.Course;
-import com.example.lms.model.Enrollment;
-import com.example.lms.model.User;
+import com.example.lms.course.model.Course;
+import com.example.lms.course.repository.CourseRepository;
+import com.example.lms.enrollment.model.Enrollment;
+import com.example.lms.enrollment.repository.EnrollmentRepository;
+import com.example.lms.user.model.User;
+import com.example.lms.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.test.context.TestPropertySource;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 

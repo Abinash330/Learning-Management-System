@@ -1,31 +1,33 @@
 package com.example.lms.config;
 
+import com.example.lms.user.model.User;
+import com.example.lms.user.repository.UserRepository;
+import jakarta.servlet.DispatcherType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.lms.model.User;
-import com.example.lms.repository.UserRepository;
-
-import jakarta.servlet.DispatcherType;
 import java.util.Optional;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public SecurityConfig(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // Allow all internal JSP dispatches including FORWARD, INCLUDE (for <jsp:include>), ERROR and ASYNC
                 .dispatcherTypeMatchers(
                     DispatcherType.FORWARD,
                     DispatcherType.INCLUDE,
@@ -33,15 +35,15 @@ public class SecurityConfig {
                     DispatcherType.ASYNC
                 ).permitAll()
                 .requestMatchers(
-                    "/", "/index", "/dashboard",
+                    "/", "/index", "/home", "/dashboard",
                     "/login", "/register", "/about", "/contact", "/faq",
+                    "/test", "/calclulate",
                     "/css/**", "/js/**", "/image/**", "/images/**", "/static/**", "/assets/**",
-                    "/views/**", "/api/notices", "/error"
+                    "/api/notices", "/error"
                 ).permitAll()
                 .requestMatchers(
-                    "/adashboard", "/users", "/admin-add", "/updateusers", "/edituser",
-                    "/broadcast-email", "/broadcast-log", "/admin/exams/**", "/admin/faq/**",
-                    "/admin-notices", "/admin-notices/**",
+                    "/admin/**", "/adashboard", "/users", "/admin-add", "/updateusers", "/edituser",
+                    "/broadcast-email", "/broadcast-log", "/admin-notices", "/admin-notices/**",
                     "/admin-courses", "/admin-courses/**",
                     "/admin-departments", "/admin-departments/**",
                     "/admin-metrics",
@@ -56,14 +58,12 @@ public class SecurityConfig {
                     "/doubts", "/doubts/reply/**"
                 ).hasAnyRole("ADMIN", "FACULTY")
                 .requestMatchers(
-                    "/fdashboard", "/f-assignments", "/f-create-assignment", "/f-grade",
-                    "/faculty/exams", "/faculty/exams/**"
+                    "/faculty/**", "/fdashboard", "/f-assignments", "/f-create-assignment", "/f-grade"
                 ).hasRole("FACULTY")
                 .requestMatchers(
-                    "/sdashboard", "/s-courses", "/s-assignments", "/s-start-course",
-                    "/s-premium", "/s-search", "/s-profile", "/s-submit", "/s-update-progress",
-                    "/student/exams", "/student/exams/**",
-                    "/student-notices",
+                    "/student/**", "/sdashboard", "/s-courses", "/s-browse-courses", "/s-enroll",
+                    "/s-assignments", "/s-start-course", "/s-premium", "/s-search", "/s-profile",
+                    "/s-update-profile", "/s-submit", "/student-notices", "/student-exams",
                     "/s-videos", "/s-watch/**", "/s-ask-doubt"
                 ).hasAnyRole("ADMIN", "STUDENT")
                 .requestMatchers(

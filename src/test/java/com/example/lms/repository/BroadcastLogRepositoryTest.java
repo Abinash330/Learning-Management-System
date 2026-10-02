@@ -1,6 +1,7 @@
 package com.example.lms.repository;
 
-import com.example.lms.model.BroadcastLog;
+import com.example.lms.notification.model.BroadcastLog;
+import com.example.lms.notification.repository.BroadcastLogRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,6 +35,6 @@ public class BroadcastLogRepositoryTest {
 
         List<BroadcastLog> logs = broadcastLogRepository.findTop50ByOrderBySentAtDesc();
         assertThat(logs).hasSize(2);
-        assertThat(logs.get(0).getSubject()).isEqualTo("Subject 2"); // Desc order check
+        assertThat(logs.get(0).getSubject()).isEqualTo("Subject 2");
     }
 }

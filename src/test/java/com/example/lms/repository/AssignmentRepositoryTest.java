@@ -1,8 +1,11 @@
 package com.example.lms.repository;
 
-import com.example.lms.model.Assignment;
-import com.example.lms.model.Course;
-import com.example.lms.model.User;
+import com.example.lms.assignment.model.Assignment;
+import com.example.lms.assignment.repository.AssignmentRepository;
+import com.example.lms.course.model.Course;
+import com.example.lms.course.repository.CourseRepository;
+import com.example.lms.user.model.User;
+import com.example.lms.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,7 @@
 package com.example.lms.repository;
 
-import com.example.lms.model.User;
+import com.example.lms.user.model.User;
+import com.example.lms.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

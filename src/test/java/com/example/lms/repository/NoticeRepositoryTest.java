@@ -1,6 +1,7 @@
 package com.example.lms.repository;
 
-import com.example.lms.model.Notice;
+import com.example.lms.notice.model.Notice;
+import com.example.lms.notice.repository.NoticeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

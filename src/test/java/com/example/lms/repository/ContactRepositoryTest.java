@@ -1,6 +1,7 @@
 package com.example.lms.repository;
 
-import com.example.lms.model.Contact;
+import com.example.lms.contact.model.Contact;
+import com.example.lms.contact.repository.ContactRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
