@@ -289,27 +289,45 @@ Once initialized, open your browser and navigate to:
 lms/
 ├── assets/
 │   └── images/                                 # Visual assets & UI screenshots
-│       ├── screenshots/                        # 01_landing_page.png ... 12_student_profile.png
-│       ├── admin_dashboard.png
-│       ├── faculty_dashboard.png
-│       └── student_dashboard.png
+│       └── screenshots/                        # 01_landing_page.png ... 12_student_profile.png
 ├── src/
 │   ├── main/
 │   │   ├── java/com/example/lms/
 │   │   │   ├── LmsApplication.java             # Spring Boot Main Entrypoint
-│   │   │   ├── component/                      # Data seeders & startup components
+│   │   │   ├── admin/                          # Admin controllers, DTOs & services
+│   │   │   ├── assignment/                     # Assignment entities, repositories & services
+│   │   │   ├── auth/                           # Authentication controllers & services
+│   │   │   ├── common/                         # Global exception handlers & file utilities
 │   │   │   ├── config/                         # Security & database configuration
-│   │   │   ├── controller/                     # Spring MVC & REST Controllers
-│   │   │   ├── model/                          # 17 JPA Entity Definitions
-│   │   │   ├── repository/                     # 17 Spring Data JPA Repositories
-│   │   │   └── service/                        # Email & Video business services
+│   │   │   │   └── seeder/                     # CommandLineRunner automated data seeders
+│   │   │   ├── contact/                        # Public contact inquiries & feedback
+│   │   │   ├── course/                         # Course management entities & services
+│   │   │   ├── department/                     # Department entity & repositories
+│   │   │   ├── doubt/                          # Q&A doubt resolution system
+│   │   │   ├── enrollment/                     # Student course enrollment & tracking
+│   │   │   ├── exam/                           # Timed MCQ online examination engine
+│   │   │   ├── faculty/                        # Faculty dashboard, grading & workflows
+│   │   │   ├── faq/                            # Dynamic institutional FAQ knowledgebase
+│   │   │   ├── home/                           # Landing page & navigation controllers
+│   │   │   ├── notice/                         # Multi-channel announcement system
+│   │   │   ├── notification/                   # Asynchronous broadcast email system
+│   │   │   ├── student/                        # Student learning suite & portal
+│   │   │   ├── user/                           # User entity, repositories & security
+│   │   │   └── video/                          # Video lecture streaming & storage
 │   │   ├── resources/
+│   │   │   ├── static/                         # Static CSS, JavaScript, and images
 │   │   │   └── application.properties          # Server, DB, Mail, Multipart config
 │   │   └── webapp/
-│   │       ├── views/                          # JSP pages & UI views
-│   │       ├── css/                            # Bootstrap & custom styling
-│   │       ├── js/                             # Interactive scripts
-│   │       └── image/                          # Static branding images
+│   │       └── WEB-INF/views/                  # Protected Modular JSP Views
+│   │           ├── admin/                      # Admin views (dashboard, users, metrics...)
+│   │           ├── auth/                       # Login and registration views
+│   │           ├── common/                     # Modular header & footer includes
+│   │           ├── faculty/                    # Faculty views (dashboard, assignments...)
+│   │           ├── home/                       # Landing, about, contact, FAQ views
+│   │           └── student/                    # Student portal, exams, courses views
+│   └── test/
+│       ├── java/com/example/lms/               # Unit, service, and controller test suites (50 tests)
+│       └── resources/                          # In-memory H2 test properties
 ├── LMS_Project_Comprehensive_Documentation.pdf  # Master Whitepaper PDF
 ├── pom.xml                                     # Maven Dependencies & Build Configuration
 └── README.md                                   # Comprehensive Repository Documentation
